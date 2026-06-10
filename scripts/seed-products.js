@@ -24,7 +24,7 @@ const PRODUCTS = [
     stock: 200,
     description:
       "Gousse de vanille Bourbon de Madagascar vendue à l'unité. Gousse souple et charnue, arômes intenses de cacao et de vanille, idéale pour la pâtisserie traditionnelle.",
-    imageUrl: 'https://loremflickr.com/600/600/vanilla,pods?lock=11',
+    imageUrl: 'https://lecomptoirdetoamasina.fr/2358-thickbox_default/flacon-de-2-gousses-de-vanille-bourbon-de-madagascar.jpg',
     category: 'vanille',
   },
   {
@@ -34,7 +34,7 @@ const PRODUCTS = [
     stock: 60,
     description:
       'Botte de 10 gousses de vanille Bourbon gourmet de Madagascar, récoltées dans la région de la SAVA. Gousses grade A, souples et généreusement givrées en vanilline.',
-    imageUrl: 'https://loremflickr.com/600/600/vanilla,pods?lock=12',
+    imageUrl: 'https://lecomptoirdetoamasina.fr/2357-thickbox_default/15-gousses-vanille-de-madagascar-en-boite-vanille-noire-gourmet.jpg',
     category: 'vanille',
   },
   {
@@ -44,7 +44,7 @@ const PRODUCTS = [
     stock: 30,
     description:
       'Botte de 25 gousses de vanille Bourbon de Madagascar pour les gourmands et les professionnels. La référence mondiale de la vanille, riche et irrésistible.',
-    imageUrl: 'https://loremflickr.com/600/600/vanilla,beans?lock=13',
+    imageUrl: 'https://lecomptoirdetoamasina.fr/2346-thickbox_default/100-gousses-de-vanille-de-madagascar-extra-gourmet.jpg',
     category: 'vanille',
   },
   {
@@ -54,7 +54,7 @@ const PRODUCTS = [
     stock: 40,
     description:
       'Poudre de gousses de vanille Bourbon entières broyées. Parfaite pour parfumer crèmes, ganaches et boissons chaudes sans alcool ni additif.',
-    imageUrl: 'https://loremflickr.com/600/600/vanilla,powder?lock=14',
+    imageUrl: 'https://lecomptoirdetoamasina.fr/2329-thickbox_default/vanille-bourbon-de-madagascar-au-kilo.jpg',
     category: 'vanille',
   },
   {
@@ -64,7 +64,7 @@ const PRODUCTS = [
     stock: 50,
     description:
       "Extrait de vanille liquide de Madagascar pour la pâtisserie. Quelques gouttes suffisent pour retrouver toute l'intensité de la vanille Bourbon.",
-    imageUrl: 'https://loremflickr.com/600/600/vanilla,extract?lock=15',
+    imageUrl: 'https://lecomptoirdetoamasina.fr/2364-thickbox_default/extrait-de-vanille-liquide-de-madagascar-patisserie.jpg',
     category: 'vanille',
   },
 
@@ -76,7 +76,7 @@ const PRODUCTS = [
     stock: 80,
     description:
       'Huile essentielle de Ravintsara de Madagascar, reconnue pour ses propriétés purifiantes et régénératrices. Incontournable du bien-être au quotidien.',
-    imageUrl: 'https://loremflickr.com/600/600/essential,oil?lock=21',
+    imageUrl: 'https://soana-nature.com/wp-content/uploads/2024/07/Huile-essentielle-ravintsara-bio-1.png',
     category: 'huiles-essentielles',
   },
   {
@@ -86,7 +86,7 @@ const PRODUCTS = [
     stock: 70,
     description:
       "Huile essentielle d'Ylang-ylang de Madagascar, utilisée pour équilibrer les émotions et créer une atmosphère de tranquillité. Parfum floral envoûtant.",
-    imageUrl: 'https://loremflickr.com/600/600/essential,oil?lock=22',
+    imageUrl: 'https://soana-nature.com/wp-content/uploads/2024/07/Huile-essentielle-ylang-ylang-bio-1.png',
     category: 'huiles-essentielles',
   },
   {
@@ -96,7 +96,7 @@ const PRODUCTS = [
     stock: 60,
     description:
       "Huile essentielle de Géranium de Madagascar, appréciée pour équilibrer la production de sébum et améliorer l'apparence de la peau.",
-    imageUrl: 'https://loremflickr.com/600/600/essential,oil,bottle?lock=23',
+    imageUrl: 'https://soana-nature.com/wp-content/uploads/2024/07/Huile-essentielle-geranium-bourbon-bio-1.png',
     category: 'huiles-essentielles',
   },
   {
@@ -116,7 +116,7 @@ const PRODUCTS = [
     stock: 65,
     description:
       'Huile essentielle de Niaouli de Madagascar, purifiante et tonifiante, traditionnellement utilisée pour dégager les voies respiratoires.',
-    imageUrl: 'https://loremflickr.com/600/600/essential,oils?lock=25',
+    imageUrl: 'https://soana-nature.com/wp-content/uploads/2021/07/Huile-essentielle-niaouli-bio-1.png',
     category: 'huiles-essentielles',
   },
 
