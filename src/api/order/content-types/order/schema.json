@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order",
+    "description": "Customer order created from Stripe Checkout"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "items": {
+      "type": "json",
+      "required": true
+    },
+    "amountTotal": {
+      "type": "decimal",
+      "min": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "eur"
+    },
+    "stripeSessionId": {
+      "type": "string",
+      "unique": true
+    },
+    "checkoutStatus": {
+      "type": "enumeration",
+      "enum": ["pending", "paid", "canceled"],
+      "default": "pending"
+    },
+    "customerEmail": {
+      "type": "email"
+    }
+  }
+}

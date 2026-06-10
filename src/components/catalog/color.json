@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_catalog_colors",
+  "info": {
+    "displayName": "Color",
+    "description": "Color swatch"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "hex": {
+      "type": "string",
+      "required": true,
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    }
+  }
+}
