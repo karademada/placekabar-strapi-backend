@@ -1,6 +1,10 @@
-allowBuilds:
-  '@swc/core': true
-  better-sqlite3: true
-  core-js-pure: false
-  esbuild: true
-  sharp: true
+# pnpm 10 bloque les scripts d'installation par defaut. Le champ reconnu est
+# `onlyBuiltDependencies` ; `allowBuilds` etait ignore en silence, ce qui
+# laissait better-sqlite3 et sharp sans binaire natif et faisait crasher
+# Strapi au demarrage ("Could not locate the bindings file").
+# core-js-pure reste absent de la liste : son script n'a pas a tourner.
+onlyBuiltDependencies:
+  - '@swc/core'
+  - better-sqlite3
+  - esbuild
+  - sharp
