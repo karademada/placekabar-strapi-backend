@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "partners",
+  "info": {
+    "singularName": "partner",
+    "pluralName": "partners",
+    "displayName": "Partner",
+    "description": "Fermiers, producteurs, collecteurs, cooperatives et transformateurs de la filiere"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "name": { "type": "string", "required": true, "unique": true, "maxLength": 120 },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["farmer", "producer", "collector", "cooperative", "processor", "artisan"],
+      "default": "producer",
+      "required": true
+    },
+    "specialty": { "type": "string", "required": true, "maxLength": 120 },
+    "tagline": { "type": "text", "maxLength": 200 },
+    "story": { "type": "blocks" },
+    "portrait": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["images"] },
+    "gallery": { "type": "media", "multiple": true, "required": false, "allowedTypes": ["images"] },
+    "location": { "type": "component", "repeatable": false, "component": "partner.location" },
+    "keyFigures": { "type": "component", "repeatable": true, "component": "partner.key-figure", "max": 4 },
+    "commitments": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::commitment.commitment",
+      "inversedBy": "partners"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "inversedBy": "partners"
+    },
+    "partnerSince": { "type": "integer", "min": 1950, "max": 2100 },
+    "certificates": { "type": "media", "multiple": true, "required": false, "allowedTypes": ["images", "files"] },
+    "website": { "type": "string" },
+    "email": { "type": "email" },
+    "phone": { "type": "string" },
+    "featured": { "type": "boolean", "default": false },
+    "rank": { "type": "integer", "default": 0 }
+  }
+}

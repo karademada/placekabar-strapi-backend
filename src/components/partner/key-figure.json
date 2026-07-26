@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_partner_key_figures",
+  "info": { "displayName": "Key figure", "icon": "chartBubble" },
+  "options": {},
+  "attributes": {
+    "value": { "type": "string", "required": true },
+    "label": { "type": "string", "required": true }
+  }
+}

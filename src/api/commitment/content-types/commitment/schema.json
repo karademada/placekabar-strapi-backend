@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "commitments",
+  "info": {
+    "singularName": "commitment",
+    "pluralName": "commitments",
+    "displayName": "Commitment",
+    "description": "Labels et modes de production : bio, equitable, social, ecologique, responsable"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": { "type": "string", "required": true, "unique": true, "maxLength": 60 },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "category": {
+      "type": "enumeration",
+      "enum": ["bio", "fair-trade", "social", "ecological", "responsible"],
+      "required": true
+    },
+    "description": { "type": "text", "maxLength": 400 },
+    "certifier": { "type": "string" },
+    "rank": { "type": "integer", "default": 0 },
+    "partners": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::partner.partner",
+      "mappedBy": "commitments"
+    }
+  }
+}

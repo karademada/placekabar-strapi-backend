@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_partner_locations",
+  "info": { "displayName": "Location", "icon": "pinMap" },
+  "options": {},
+  "attributes": {
+    "region": { "type": "string", "required": true },
+    "town": { "type": "string" },
+    "country": { "type": "string", "default": "Madagascar", "required": true },
+    "altitude": { "type": "integer" },
+    "latitude": { "type": "decimal" },
+    "longitude": { "type": "decimal" }
+  }
+}
