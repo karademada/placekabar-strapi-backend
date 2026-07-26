@@ -253,17 +253,13 @@ async function main() {
 
   // --- Partenaires ---
   let created = 0;
-  let skipped = 0;
+  let relinked = 0;
   const missingProducts = new Set();
 
   for (const partner of PARTNERS) {
     const existing = await app.documents('api::partner.partner').findFirst({
       filters: { slug: partner.slug },
     });
-    if (existing) {
-      skipped += 1;
-      continue;
-    }
 
     const { commitments, products: productSlugs, ...data } = partner;
 
@@ -273,18 +269,33 @@ async function main() {
       else missingProducts.add(slug);
     }
 
+    const relations = {
+      commitments: commitments.map((slug) => commitmentDocIds[slug]),
+      products: linkedProducts,
+    };
+
+    // Un partenaire deja present voit seulement ses relations reconciliees :
+    // seed-products.js peut avoir tourne apres ce script, auquel cas les liens
+    // produits n'ont jamais pu etre resolus. Les champs editoriaux ne sont pas
+    // ecrases, une retouche faite dans l'admin survit donc au reseed.
+    if (existing) {
+      await app.documents('api::partner.partner').update({
+        documentId: existing.documentId,
+        data: relations,
+        status: 'published',
+      });
+      relinked += 1;
+      continue;
+    }
+
     await app.documents('api::partner.partner').create({
-      data: {
-        ...data,
-        commitments: commitments.map((slug) => commitmentDocIds[slug]),
-        products: linkedProducts,
-      },
+      data: { ...data, ...relations },
       status: 'published',
     });
     created += 1;
   }
 
-  console.log(`done: ${created} partners created, ${skipped} skipped`);
+  console.log(`done: ${created} partners created, ${relinked} relations reconciled`);
   if (missingProducts.size > 0) {
     console.log(
       `warning: unknown product slugs, run seed-products.js first → ${[...missingProducts].join(', ')}`,
