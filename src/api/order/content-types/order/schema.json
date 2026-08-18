@@ -35,6 +35,11 @@
     },
     "customerEmail": {
       "type": "email"
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }

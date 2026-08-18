@@ -101,6 +101,10 @@ const PUBLIC_READ_ACTIONS = [
   'api::category.category.findOne',
 ];
 
+const AUTHENTICATED_ACTIONS = [
+  'api::order.order.createCheckoutSession',
+];
+
 async function grantPublicReadPermissions(strapi: Core.Strapi) {
   const publicRole = await strapi.db
     .query('plugin::users-permissions.role')
@@ -123,11 +127,34 @@ async function grantPublicReadPermissions(strapi: Core.Strapi) {
   }
 }
 
+async function grantAuthenticatedPermissions(strapi: Core.Strapi) {
+  const authenticatedRole = await strapi.db
+    .query('plugin::users-permissions.role')
+    .findOne({ where: { type: 'authenticated' } });
+
+  if (!authenticatedRole) {
+    strapi.log.warn('[seed] authenticated role not found — skip permission grant');
+    return;
+  }
+
+  for (const action of AUTHENTICATED_ACTIONS) {
+    const existing = await strapi.db
+      .query('plugin::users-permissions.permission')
+      .findOne({ where: { role: authenticatedRole.id, action } });
+    if (existing) continue;
+    await strapi.db
+      .query('plugin::users-permissions.permission')
+      .create({ data: { role: authenticatedRole.id, action } });
+    strapi.log.info(`[seed] granted authenticated ${action}`);
+  }
+}
+
 export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) {},
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await grantPublicReadPermissions(strapi);
+    await grantAuthenticatedPermissions(strapi);
 
     const existing = await strapi.documents('api::product.product').count({});
     if (existing > 0) {

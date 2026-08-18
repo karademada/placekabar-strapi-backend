@@ -24,8 +24,49 @@ interface CheckoutItemInput {
   color?: string | null;
 }
 
+type AuthUser = {
+  id: number;
+  documentId?: string;
+  email?: string;
+  username?: string;
+};
+
+/**
+ * Minimal in-memory rate limiter for the checkout endpoint.
+ * It is a per-instance guard (not a distributed one) — enough to stop
+ * casual abuse and Stripe-session spam; a CDN/WAF layer should back it up
+ * at production scale. Entries are cleaned lazily on each hit.
+ */
+const CHECKOUT_WINDOW_MS = 60_000;
+const CHECKOUT_MAX_HITS = Number(process.env.CHECKOUT_RATE_LIMIT ?? 10);
+const hitsByIp = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = hitsByIp.get(ip);
+  if (!entry || entry.resetAt <= now) {
+    hitsByIp.set(ip, { count: 1, resetAt: now + CHECKOUT_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > CHECKOUT_MAX_HITS;
+}
+
+function clientIp(ctx: { request: { ip?: string } }): string {
+  return ctx.request.ip ?? 'unknown';
+}
+
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async createCheckoutSession(ctx) {
+    if (rateLimited(clientIp(ctx))) {
+      return ctx.throw(429, 'too many requests');
+    }
+
+    const user = ctx.state.user as AuthUser | undefined;
+    if (!user?.id) {
+      return ctx.unauthorized('authentication required');
+    }
+
     const { items } = (ctx.request.body ?? {}) as { items?: CheckoutItemInput[] };
 
     if (!Array.isArray(items) || items.length === 0) {
@@ -89,6 +130,8 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         amountTotal: subtotal + shippingEur,
         currency: 'eur',
         checkoutStatus: 'pending',
+        customerEmail: user.email ?? undefined,
+        customer: user.documentId ?? user.id,
       },
     });
 
@@ -143,15 +186,40 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       if (!order) {
         strapi.log.warn(`Stripe webhook: no order found for session ${session.id}`);
       } else if (event.type === 'checkout.session.completed') {
-        await strapi.documents('api::order.order').update({
-          documentId: order.documentId,
-          data: {
-            checkoutStatus: 'paid',
-            customerEmail: session.customer_details?.email ?? undefined,
-            amountTotal: (session.amount_total ?? 0) / 100,
-          },
-        });
-      } else {
+        // Idempotency: Stripe may deliver the same event more than once.
+        // Only the first delivery (pending → paid) should decrement stock.
+        if (order.checkoutStatus !== 'paid') {
+          await strapi.db.transaction(async () => {
+            await strapi.documents('api::order.order').update({
+              documentId: order.documentId,
+              data: {
+                checkoutStatus: 'paid',
+                customerEmail: session.customer_details?.email ?? undefined,
+                amountTotal: (session.amount_total ?? 0) / 100,
+              },
+            });
+
+            const items = (order.items ?? []) as CheckoutItemInput[];
+            for (const item of items) {
+              const product = await strapi.db.query('api::product.product').findOne({
+                where: { id: item.id },
+              });
+              if (!product) {
+                strapi.log.warn(`[webhook] product ${item.id} missing — cannot decrement stock`);
+                continue;
+              }
+              const current = Number(product.stock ?? 0);
+              // Never go negative: sell-through past zero is preferable to
+              // blocking a payment that already succeeded.
+              const next = Math.max(0, current - item.quantity);
+              await strapi.db.query('api::product.product').update({
+                where: { id: item.id },
+                data: { stock: next },
+              });
+            }
+          });
+        }
+      } else if (order.checkoutStatus !== 'canceled') {
         await strapi.documents('api::order.order').update({
           documentId: order.documentId,
           data: { checkoutStatus: 'canceled' },
